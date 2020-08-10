@@ -224,5 +224,7 @@ const router = new VueRouter({
 ```
 
 准备休息
-TODO: 组件的传参和懒加载
+
+~~TODO: 组件的传参和懒加载~~
+
 [参考资料](https://juejin.im/post/6844903665388486664)

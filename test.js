@@ -29,11 +29,31 @@ function myFunction() {
     console.log(ages.some(checkAdult));
 }
 const router = new VueRouter({
-    routes: [
-        path: '/foo',
-        component: Foo,
-        meta: {
-            requiredAuths: true
+        routes: [
+            path: '/foo',
+            component: Foo,
+            meta: {
+                requiredAuths: true
+            }
+        ]
+    }) <
+    script >
+    export default {
+        name: test,
+        data() {
+            return {
+                val: 2222
+            }
         }
-    ]
-})
+        computed: {
+            val: {
+                set() {
+                    console.log('i am setting the val')
+                }
+            }
+        }
+        mounted() {
+            this.val = 778
+        }
+    } <
+    /script>

@@ -120,39 +120,42 @@ export default{
 ```html
 //父组件
 <div id="app">
-  <my-button @greet="sayHi"></my-button>
+    <Button color="red"  @greet="logVal">我是插槽的值</Button>
 </div>
 ```
 
-```javascript
-let MyButton = Vue.extend({
-  template: '<button @click="triggerClick">click</button>',
-  data () {
-    return {
-      greeting: 'vue.js!'
+```vue
+<template>
+  <button class="btn" :style="{color:color}" @click="triggerClick()">
+    <slot/> <!-- 插槽 -->
+  </button>
+</template>
+<script>
+import 'jquery'
+export default {
+  // 传入子组件的参数写到props
+  props: {
+    sonArr: {
+      type: Array,
+      default: () => { return [9, 8, 7, 6] }
     }
   },
   methods: {
-    triggerClick () {
-      this.$emit('greet', this.greeting)
+    triggerClick: function () {
+      console.log('son do 1')
+      this.$emit('greet', this.sonArr)
+      console.log('son do 2')
+      console.log(this.sonArr)
     }
   }
-})
-
-new Vue({
-  el: '#app',
-  components: {
-    MyButton
-  },
-  methods: {
-    sayHi (val) {
-      alert('Hi, ' + val) // 'Hi, vue.js!'
-    }
-  }
-})
-
+}
+</script>
 ```
-当按钮点击时。会触发trggerClick()这个歌函数。这个函数又`派发（emit）`了greet事件。并且`触发`了他。而这个greet事件触发时又会执行一个函数。所以总结一下他是提早监听了greet
+当按钮点击时。会触发trggerClick()这个歌函数。这个函数又`派发（emit）`了greet事件。并且`触发`了他。而这个greet事件触发时又会执行一个函数。所以总结一下他是提早监听了greet。
+
+也就是说当子组件被点击时。先触发子组件的函数。子组件再通过emit触发了父组件的函数`再回到子组件`。实现了将子组件的值传递给父组件。
+
+个人又测试了在父组件修改子组件的值。对于引用对象是可行的。
 #### `$attrs` & `$listeners`
 
 还是先来看官方文档(英文比中文好懂系列)

@@ -193,4 +193,3 @@ const router = new VueRouter({
 那么他的用处是什么呢按照官方给的例子是可以做简单的`登录验证`
 
 
-leiletuziteng

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <style type="text/css">
+            #a{
+                width: 100px;
+                height: 100px;
+                background: red;
+            }
+            #b{
+                width: 50px;    
+                height: 50px;
+                background: green;
+            }
+        </style>
+    </head>
+    <body>
+        <div id='a'>
+            <div id='b'>
+                <p id="p">111</p>
+            </div>
+            
+        </div>
+    </body>
+    <script type="text/javascript">
+        var a=document.getElementById('a');
+        var b=document.getElementById('b');
+        var p=document.getElementById('p');
+         
+        a.addEventListener('click',function (){
+            alert('a');
+        },true);
+        b.addEventListener('click',function(){
+            alert('b')
+        },false)
+        p.addEventListener('click',function(){
+            alert('p')
+        },true)
+        //addEventListener 有三个参数
+                //第一个是 事件名
+                //第二个是 函数方法
+                //第三个是 布尔值   （判断是事件冒泡还是事件捕捉  true 是事件捕捉  false 是事件捕捉）
+
+    </script>
+</html>

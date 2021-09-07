@@ -26,4 +26,14 @@ function getRes (arg1, arg2) {
     return resF!=0?resT+"+"+resF+"i":resT
 
 }
-console.log(getRes(arg1, arg2))
+// console.log(getRes(arg1, arg2))
+var value=1;
+
+function bar(){
+	var value=2;
+	foo();
+}
+function foo(){
+	console.log(value);
+}
+window.foo();

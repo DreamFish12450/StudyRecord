@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .content{
+            height: 900px;
+            background:gray;
+            display:flex;
+            flex-direction:row;
+            flex-wrap: nowrap;
+            width: 1000px;
+        }
+        .sidebar{
+            width:200px;
+            height:inherit;
+            background: blueviolet;
+        }
+        .mainBody{
+            flex:1;
+            background:wheat;
+            display:flex;
+            flex-direction:column;
+            flex-wrap: nowrap;
+
+        }
+        .head{
+            display:flex;
+            height: 80px;
+            background:tomato;
+            flex-direction:row;
+            flex-wrap: nowrap;
+        }
+        .avatar{
+            width: 80px;
+            background: black;
+        }
+        .name{
+            flex:1;
+            background: rebeccapurple;
+        }
+        .logout{
+            width:80px;
+            right:0;
+            
+            background: black;
+        }
+        .articles{
+            flex:1;
+            background:turquoise;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <div class="sidebar"></div>
+        <div class="mainBody">
+            <div class = "head">
+                <div class = "avatar"></div>
+                <div class = "name"></div>
+                <div class ="logout"></div>
+            </div>
+            <div class = "articles">
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+
+<body>
+    <a href="#" id="aTag">QAQ给我变</a>
+    <div id="B">
+        <a id="A" href="#">元素A</a>
+    </div>
+    <input id="inP">
+
+</body>
+<script>
+    let pColor = document.getElementById("aTag").style.color
+    $("#aTag").hover(() => {
+        $("#aTag").css("color", "")
+    })
+    var domA = document.getElementById('A');
+    $("#B").click(() => {
+        alert("c")
+    })
+    $("#inP").blur(()=>{
+        console.log("blur")
+    });
+    $("#inP").change((function(e){
+        console.log("change")
+    }))
+    $("#inP").mouseleave(function(e){
+        console.log("mouseLeave")
+    })
+    //冒泡
+    domA.addEventListener('click', function () {
+        alert('A')
+    }, false)
+
+    $("#A").href(function () {
+        alert('D')
+    })
+    //捕获
+    domA.addEventListener('click', function () {
+        alert('B')
+    }, true)
+</script>
+
+</html>

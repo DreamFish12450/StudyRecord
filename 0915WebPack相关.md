@@ -22,9 +22,11 @@ webpack的打包思路就是从程序逻辑入手：`入口文件 => 分析代�
 
 ### 总结一下
 
-webpack其实是一个按序加载而gulp等传统则是看到啥加载啥
+webpack其实是一个按序加载而gulp等传统则是看到啥加载啥。
 
-## WebPack构建原理
+webpack是基于入口的。而grant则是基于任务和流
+
+## WebPack构建原理的
 
 <img src="https://img.alicdn.com/tps/TB1GVGFNXXXXXaTapXXXXXXXXXX-4436-4244.jpg" alt="img" style="zoom:200%;" />
 
@@ -51,4 +53,141 @@ webpack其实是一个按序加载而gulp等传统则是看到啥加载啥
 
 6. **输出完成**输出所有的 `chunk` 到文件系统。
 
-### 一个Chunk是一些模块的封装单元。Chunk在构建完成就呈现为bundle。
+### 一个Chunk是一些模块的封装单元。Chunk在构建完成就呈现为bundle。 
+
+## 有哪些常见的Loader？他们是解决什么问题的？
+
+- file-loader：把文件输出到一个文件夹中，在代码中通过相对 URL 去引用输出的文件
+- url-loader：和 file-loader 类似，但是能在文件很小的情况下以 base64 的方式把文件内容注入到代码中去
+- source-map-loader：加载额外的 Source Map 文件，以方便断点调试。在打包后代码会挤在一排，变量名也会只剩下a,b,c、**sourcemap就是这样的一个将打包后的代码和原先代码连接起来的**
+- image-loader：加载并且压缩图片文件
+- babel-loader：把 ES6 转换成 ES5
+- css-loader：加载 CSS，支持模块化、压缩、文件导入等特性
+  + 负责加载CSS。
+- style-loader：把 CSS 代码注入到 JavaScript 中，通过 DOM 操作去加载 CSS。
+  + 负责将CSS挂载到页面上
+- eslint-loader：通过 ESLint 检查 JavaScript 代码
+
+### 总结一下loader
+
+加载和解析非JS的文件。
+
+### plugin插件
+
+插件更多的是扩展webpack的功能。他是一个类主要是有一个**apply**方法。这个apply方法，这个方法的形参是一个**compiler**。且需要补充的是这个**apply方法**会被全局的webpack compiler所调用。然后这个compiler有暴露了很多的钩子
+
+#### 有点忘了的钩子的概念
+
+他是在系统的某个时刻会被自动调用，其函数名是被事先决定的。而开发者可以决定的函数体或者说一个回调。
+
+#### 来看段代码
+
+```js
+const pluginName = 'ConsoleLogOnBuildWebpackPlugin';
+
+class ConsoleLogOnBuildWebpackPlugin {
+  // 构造器参数，用于传递options
+  constructor(options) {
+    console.log("current plugin option is" + JSON.stringify(options))
+  }
+  // apply 方法是一个插件所必须的
+  apply(compiler) {
+    // compiler 继承自 tapable
+    // tapable  提供了多种 hooks  https://github.com/webpack/tapable#hook-types
+    // run      是 AsyncSeriesHook实例 [tapable提供的多种hooks的一种]
+      
+    //compiler.hooks可以获取所有的钩子。run能够制定一个具体的构造和生命周期中的钩子类似
+    //compilation只代表着当前的一个编译对象
+    compiler.hooks.run.tap(pluginName, compilation => {
+      console.log('webpack 构建过程开始！');
+    });
+  }
+}
+```
+
+## compilation
+
+它也具有compiler的同样的方法和特性。Compilation 模块会被 Compiler 用来创建新的编译（或新的构建）。Compiler可以理解为整个webpack生命周期都存在的编译[构建]对象，但是**Compliation只代表着某一次的编译[构建]对象。**
+
+compilation对象包含了当前的模块资源，编译生成资源，变化的文件等。在开发模式下，当检测到一个文件变化，就有一个compilation被创建。compilation对象也提供了很多回调供plugin进行扩展，也可以通过compilation获取到compiler对象。
+
+### 一些经常用的插件
+
+### defineplugin
+
+存储全局变量的插件。在
+
+## hmr
+
+热更新的插件，可以检测到所有的变化
+
+### BabelMinifyWebpackPlugin
+
+主要是用于一些由webpack模块生成的文件进行更新
+
+### UglifyjsWebpackPlugin
+
+是用来做混淆和优化代码的，可以选择那些代码进行优化
+
+## 热更新的原理的一些简单分析
+
+1. 启动本地服务
+
+   1. 启动`webpack`，生成`compiler`实例。`compiler`上有很多方法，比如可以启动 `webpack` 所有**编译**工作，以及**监听**本地文件的变化。
+   2. 使用`express`框架启动本地`server`，让浏览器可以请求本地的**静态资源**。
+
+2. 获取`websocket`客户端代码路径，另一个是根据配置获取`webpack`热更新代码路径。
+
+3. 然后在第一次的编译结束后就会执行`_sendStats`方法通过`websocket`给浏览器发送通知，`ok`和`hash`事件，这样浏览器就可以拿到最新的`hash`值了
+
+4. 首先的话他也是一个观察者模式。`webpack-dev-middleware`会监听文件的变化
+
+   + `webpack-dev-middleware`与`webpack-dev-server`后者只负责启动服务和一些前置的准备。而中间件会负责本地文件的编译和输出还有监听。
+     1. 调用了`compiler.watch`方法。在这里会对文件进行重新的**编译**
+     2. 执行setFs方法，将编译后的文件**打包到内存**中来获得更快的访问速度
+
+5. 然后是会去监听webpack的编译结束。更2中的类似
+
+6. 浏览器要接收到这个事件了
+
+   热更新检查事件是调用`reloadApp`方法。比较奇怪的是，这个方法又利用`node.js`的`EventEmitter`，发出`webpackHotUpdate`消息。webpack会webpack`监听到了`webpackHotUpdate事件。**然后执行 moudle.hot.check**
+
+7. 真正的热更新的准备阶段
+   + 通过jsonp的形式获取更新的可以直接执行的代码
+
+8. 使用hotapply来更新所有的模块
+   + 删除过期的
+   + 加薪的模块添加到modules中去
+   + 通过__webpack_require__执行相关模块的代码
+
+## VUE中的按需加载
+
+一般都是通过现成的组件库中的一些插件。是在babelrc进行配置。
+
+也就是说这些插件是用于转义代码时进行的。举个例子现在的antd和element-ui都有提供
+
+```
+{
+  "plugins": [xxx,
+    ["component", {
+      libraryName: "antd",
+      style: true,
+    }, "antd"]
+}
+```
+
+其实在用的时候就是一个按需导入，也就是通过花括号实现。
+
+### .babelrc
+
+除了删除的plugin的配置还有一个preset。这个就是告诉Babel要转换的源码使用了哪些新的语法特性（比如es6->es5他多了一个箭头函数的语法，所以要把他补进去)，presets是一组Plugins的集合。
+
+最牛逼的应该就是一个`env`配置。根据目标环境选择不支持的新特性来将源代码转译成新的代码
+
+```js
+{
+  "presets": ['env']
+}
+```
+
+他也可以进行一些简单的配置

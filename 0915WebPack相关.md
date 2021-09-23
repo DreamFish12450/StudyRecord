@@ -150,7 +150,7 @@ compilation对象包含了当前的模块资源，编译生成资源，变化的
 
 6. 浏览器要接收到这个事件了
 
-   热更新检查事件是调用`reloadApp`方法。比较奇怪的是，这个方法又利用`node.js`的`EventEmitter`，发出`webpackHotUpdate`消息。webpack会webpack`监听到了`webpackHotUpdate事件。**然后执行 moudle.hot.check**
+   热更新检查事件是调用`reloadApp`方法。比较奇怪的是，这个方法又利用`node.js`的`EventEmitter`，发出`webpackHotUpdate`消息。webpack`监听到了`webpackHotUpdate事件。**然后执行 moudle.hot.check**
 
 7. 真正的热更新的准备阶段
    + 通过jsonp的形式获取更新的可以直接执行的代码
